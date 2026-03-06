@@ -1,217 +1,446 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Playlist de Áudios - Hamilton Moreira</title>
+
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 20px;
-      background: linear-gradient(135deg, #e0f7fa, #fff);
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
+      color: #1f2937;
+      padding: 24px;
     }
 
     .container {
-      max-width: 600px;
-      margin: auto;
-      background: #fff;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      text-align: center;
+      max-width: 760px;
+      margin: 0 auto;
+      background: #ffffff;
+      border-radius: 22px;
+      padding: 32px;
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.10);
+      border: 1px solid #e5e7eb;
+    }
+
+    .topo {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
     }
 
     .logo {
-      width: 150px;
-      margin-bottom: 20px;
-    }
-
-    h1 {
-      font-size: 1.5em;
-      margin-bottom: 20px;
-    }
-
-    #search {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      border-radius: 16px;
+      background: #f9fafb;
       padding: 10px;
-      width: 100%;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      margin-bottom: 25px;
-      font-size: 1em;
+      border: 1px solid #e5e7eb;
     }
 
-    .audio-item {
+    .titulo-area {
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .titulo-area h1 {
+      margin: 0 0 8px;
+      font-size: 1.8rem;
+      color: #0f172a;
+    }
+
+    .titulo-area p {
+      margin: 0;
+      color: #6b7280;
+      font-size: 0.98rem;
+      line-height: 1.5;
+    }
+
+    .card {
+      background: #f8fafc;
+      border: 1px solid #e5e7eb;
+      border-radius: 18px;
+      padding: 22px;
       margin-bottom: 20px;
-      text-align: left;
     }
 
-    .audio-item h3 {
-      font-size: 1em;
-      margin-bottom: 5px;
+    .label {
+      display: block;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: #111827;
+      font-size: 0.95rem;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+      outline: none;
+      transition: 0.2s ease;
+      margin-bottom: 16px;
+      background: #fff;
+    }
+
+    .search-box:focus,
+    .combo:focus {
+      border-color: #0ea5e9;
+      box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.12);
+    }
+
+    .combo {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+      outline: none;
+      transition: 0.2s ease;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .player-card {
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: #fff;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.22);
+    }
+
+    .badge {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #e2e8f0;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      margin-bottom: 14px;
+    }
+
+    .audio-title {
+      font-size: 1.25rem;
+      margin: 0 0 10px;
+      line-height: 1.4;
+      color: #ffffff;
+    }
+
+    .audio-subtitle {
+      margin: 0 0 20px;
+      color: #cbd5e1;
+      font-size: 0.96rem;
     }
 
     audio {
       width: 100%;
+      margin-bottom: 18px;
+      border-radius: 12px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-size: 0.96rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: #0ea5e9;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #0284c7;
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e1;
+    }
+
+    .footer-note {
+      margin-top: 20px;
+      text-align: center;
+      color: #6b7280;
+      font-size: 0.9rem;
+    }
+
+    .empty-message {
+      margin-top: 12px;
+      color: #b91c1c;
+      font-weight: 600;
+      display: none;
     }
 
     @media (max-width: 600px) {
+      body {
+        padding: 14px;
+      }
+
       .container {
-        padding: 15px;
+        padding: 20px;
+      }
+
+      .titulo-area h1 {
+        font-size: 1.45rem;
+      }
+
+      .audio-title {
+        font-size: 1.1rem;
+      }
+
+      .controls {
+        flex-direction: column;
+      }
+
+      .btn {
+        width: 100%;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <img src="Logo.png" alt="Logo Hamilton Moreira" class="logo" />
-    <h1>🎧 Playlist de Áudios - Hamilton Moreira</h1>
+    <div class="topo">
+      <img src="Logo.png" alt="Logo Hamilton Moreira" class="logo" />
 
-    <input type="text" id="search" placeholder="🔍 Buscar por título..." oninput="filtrarAudios()" />
+      <div class="titulo-area">
+        <h1>🎧 Playlist de Áudios - Hamilton Moreira</h1>
+        <p>
+          Escolha um capítulo no ComboBox, filtre por nome e ouça os áudios
+          em uma interface mais limpa, moderna e profissional.
+        </p>
+      </div>
+    </div>
 
-    <div id="lista-audios">
-      <div class="audio-item">
-        <h3>Seja muito bem-vindo ao Manual do Pai do Atleta de Futebol</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1ob5m8j4WVt7" type="audio/mpeg" />
-        </audio>
-      </div>
+    <div class="card">
+      <label for="search" class="label">Buscar capítulo</label>
+      <input
+        type="text"
+        id="search"
+        class="search-box"
+        placeholder="Digite parte do título do áudio..."
+      />
 
-      <div class="audio-item">
-        <h3>A Importância da Alimentação e Hidratação no Futebol</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/12PBWfvWgdji" type="audio/mpeg" />
-        </audio>
-      </div>
+      <label for="audioSelect" class="label">Selecionar áudio</label>
+      <select id="audioSelect" class="combo"></select>
 
-      <div class="audio-item">
-        <h3>O álcool, em especial, é extremamente prejudicial </h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1oCZ5i6Mfu3l" type="audio/mpeg" />
-        </audio>
+      <div id="emptyMessage" class="empty-message">
+        Nenhum áudio encontrado para essa busca.
       </div>
-      <div class="audio-item">
-        <h3>Áudio Dicas Técnicas</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1hWYO1oQXLzj" type="audio/mpeg" />
-        </audio>
+    </div>
+
+    <div class="player-card">
+      <div class="badge" id="trackInfo">Faixa 0 de 0</div>
+      <h2 class="audio-title" id="currentTitle">Selecione um áudio</h2>
+      <p class="audio-subtitle" id="currentSubtitle">
+        O player será atualizado automaticamente quando você escolher uma faixa.
+      </p>
+
+      <audio id="player" controls>
+        <source id="audioSource" src="" type="audio/mpeg" />
+        Seu navegador não suporta o elemento de áudio.
+      </audio>
+
+      <div class="controls">
+        <button class="btn btn-secondary" id="prevBtn" type="button">⏮ Anterior</button>
+        <button class="btn btn-primary" id="playBtn" type="button">▶ Reproduzir</button>
+        <button class="btn btn-secondary" id="nextBtn" type="button">⏭ Próximo</button>
       </div>
-      <div class="audio-item">
-        <h3>Áudio Dicas Técnicas</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1hWYO1oQXLzj" type="audio/mpeg" />
-        </audio>
-      </div>
-      <div class="audio-item">
-        <h3>Áudio Dicas Técnicas</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1hWYO1oQXLzj" type="audio/mpeg" />
-        </audio>
-      </div>
-      <div class="audio-item">
-        <h3>Áudio Dicas Técnicas</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1hWYO1oQXLzj" type="audio/mpeg" />
-        </audio>
-      </div>
-      <div class="audio-item">
-        <h3>Áudio Dicas Técnicas</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1hWYO1oQXLzj" type="audio/mpeg" />
-        </audio>
-      </div>
-      <div class="audio-item">
-        <h3>Áudio Dicas Técnicas</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1hWYO1oQXLzj" type="audio/mpeg" />
-        </audio>
-      </div>
-      <div class="audio-item">
-        <h3>Áudio Dicas Técnicas</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1hWYO1oQXLzj" type="audio/mpeg" />
-        </audio>
-      </div>
-      <div class="audio-item">
-        <h3>Áudio Dicas Técnicas</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1hWYO1oQXLzj" type="audio/mpeg" />
-        </audio>
-      </div>
-      <div class="audio-item">
-        <h3>Áudio Dicas Técnicas</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1hWYO1oQXLzj" type="audio/mpeg" />
-        </audio>
-      </div>
-      <div class="audio-item">
-        <h3>Áudio Dicas Técnicas</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1hWYO1oQXLzj" type="audio/mpeg" />
-        </audio>
-      </div>
-      <div class="audio-item">
-        <h3>Áudio Dicas Técnicas</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1hWYO1oQXLzj" type="audio/mpeg" />
-        </audio>
-      </div>
-      <div class="audio-item">
-        <h3>Áudio Dicas Técnicas</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1hWYO1oQXLzj" type="audio/mpeg" />
-        </audio>
-      </div>
-      <div class="audio-item">
-        <h3>Áudio Dicas Técnicas</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1hWYO1oQXLzj" type="audio/mpeg" />
-        </audio>
-      </div>
-      <div class="audio-item">
-        <h3>Áudio Dicas Técnicas</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1hWYO1oQXLzj" type="audio/mpeg" />
-        </audio>
-      </div>
-      <div class="audio-item">
-        <h3>Áudio Dicas Técnicas</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1hWYO1oQXLzj" type="audio/mpeg" />
-        </audio>
-      </div>
-      <div class="audio-item">
-        <h3>Áudio Dicas Técnicas</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1hWYO1oQXLzj" type="audio/mpeg" />
-        </audio>
-      </div>
-      <div class="audio-item">
-        <h3>Áudio Dicas Técnicas</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1hWYO1oQXLzj" type="audio/mpeg" />
-        </audio>
-      </div>
-      <div class="audio-item">
-        <h3>Áudio Dicas Técnicas</h3>
-        <audio controls>
-          <source src="https://media.vocaroo.com/mp3/1hWYO1oQXLzj" type="audio/mpeg" />
-        </audio>
-      </div>
+    </div>
+
+    <div class="footer-note">
+      Plataforma de áudio organizada em formato de capítulos.
     </div>
   </div>
 
   <script>
-    function filtrarAudios() {
-      const termo = document.getElementById("search").value.toLowerCase();
-      const itens = document.querySelectorAll(".audio-item");
+    const audios = [
+      {
+        titulo: "Seja muito bem-vindo ao Manual do Pai do Atleta de Futebol",
+        url: "https://media.vocaroo.com/mp3/1ob5m8j4WVt7"
+      },
+      {
+        titulo: "A Importância da Alimentação e Hidratação no Futebol",
+        url: "https://media.vocaroo.com/mp3/12PBWfvWgdji"
+      },
+      {
+        titulo: "O álcool, em especial, é extremamente prejudicial",
+        url: "https://media.vocaroo.com/mp3/1oCZ5i6Mfu3l"
+      },
+      {
+        titulo: "Como considerações finais, é preciso compreender que",
+        url: "https://media.vocaroo.com/mp3/1hWYO1oQXLzj"
+      },
+      {
+        titulo: "Áudio Dicas Técnicas 01",
+        url: "https://media.vocaroo.com/mp3/1hWYO1oQXLzj"
+      },
+      {
+        titulo: "Áudio Dicas Técnicas 02",
+        url: "https://media.vocaroo.com/mp3/1hWYO1oQXLzj"
+      },
+      {
+        titulo: "Áudio Dicas Técnicas 03",
+        url: "https://media.vocaroo.com/mp3/1hWYO1oQXLzj"
+      },
+      {
+        titulo: "Áudio Dicas Técnicas 04",
+        url: "https://media.vocaroo.com/mp3/1hWYO1oQXLzj"
+      }
+    ];
 
-      itens.forEach(item => {
-        const titulo = item.querySelector("h3").innerText.toLowerCase();
-        item.style.display = titulo.includes(termo) ? "block" : "none";
+    const audioSelect = document.getElementById("audioSelect");
+    const searchInput = document.getElementById("search");
+    const player = document.getElementById("player");
+    const audioSource = document.getElementById("audioSource");
+    const currentTitle = document.getElementById("currentTitle");
+    const currentSubtitle = document.getElementById("currentSubtitle");
+    const trackInfo = document.getElementById("trackInfo");
+    const emptyMessage = document.getElementById("emptyMessage");
+
+    const prevBtn = document.getElementById("prevBtn");
+    const playBtn = document.getElementById("playBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    let listaFiltrada = [...audios];
+    let indiceAtual = -1;
+
+    function popularCombo(lista) {
+      audioSelect.innerHTML = "";
+
+      if (lista.length === 0) {
+        const option = document.createElement("option");
+        option.value = "";
+        option.textContent = "Nenhum áudio encontrado";
+        audioSelect.appendChild(option);
+        emptyMessage.style.display = "block";
+        return;
+      }
+
+      emptyMessage.style.display = "none";
+
+      const defaultOption = document.createElement("option");
+      defaultOption.value = "";
+      defaultOption.textContent = "Selecione um áudio...";
+      audioSelect.appendChild(defaultOption);
+
+      lista.forEach((audio, index) => {
+        const option = document.createElement("option");
+        option.value = index;
+        option.textContent = audio.titulo;
+        audioSelect.appendChild(option);
       });
     }
+
+    function atualizarPlayer(index, autoPlay = false) {
+      if (index < 0 || index >= listaFiltrada.length) return;
+
+      indiceAtual = index;
+      const audioAtual = listaFiltrada[index];
+
+      audioSource.src = audioAtual.url;
+      player.load();
+
+      currentTitle.textContent = audioAtual.titulo;
+      currentSubtitle.textContent = "Capítulo selecionado na playlist.";
+      trackInfo.textContent = `Faixa ${index + 1} de ${listaFiltrada.length}`;
+
+      audioSelect.value = index;
+
+      if (autoPlay) {
+        player.play();
+      }
+    }
+
+    function filtrarAudios() {
+      const termo = searchInput.value.trim().toLowerCase();
+
+      listaFiltrada = audios.filter(audio =>
+        audio.titulo.toLowerCase().includes(termo)
+      );
+
+      popularCombo(listaFiltrada);
+
+      indiceAtual = -1;
+      currentTitle.textContent = "Selecione um áudio";
+      currentSubtitle.textContent = "O player será atualizado automaticamente quando você escolher uma faixa.";
+      trackInfo.textContent = `Faixa 0 de ${listaFiltrada.length}`;
+      audioSource.src = "";
+      player.load();
+    }
+
+    audioSelect.addEventListener("change", function () {
+      const index = Number(this.value);
+      if (!isNaN(index)) {
+        atualizarPlayer(index, false);
+      }
+    });
+
+    searchInput.addEventListener("input", filtrarAudios);
+
+    prevBtn.addEventListener("click", function () {
+      if (listaFiltrada.length === 0) return;
+
+      if (indiceAtual <= 0) {
+        atualizarPlayer(listaFiltrada.length - 1, true);
+      } else {
+        atualizarPlayer(indiceAtual - 1, true);
+      }
+    });
+
+    nextBtn.addEventListener("click", function () {
+      if (listaFiltrada.length === 0) return;
+
+      if (indiceAtual >= listaFiltrada.length - 1 || indiceAtual === -1) {
+        atualizarPlayer(0, true);
+      } else {
+        atualizarPlayer(indiceAtual + 1, true);
+      }
+    });
+
+    playBtn.addEventListener("click", function () {
+      if (!audioSource.src && listaFiltrada.length > 0) {
+        atualizarPlayer(0, true);
+      } else {
+        player.play();
+      }
+    });
+
+    player.addEventListener("ended", function () {
+      if (listaFiltrada.length === 0) return;
+
+      if (indiceAtual < listaFiltrada.length - 1) {
+        atualizarPlayer(indiceAtual + 1, true);
+      }
+    });
+
+    popularCombo(listaFiltrada);
+    trackInfo.textContent = `Faixa 0 de ${listaFiltrada.length}`;
   </script>
 </body>
 </html>
-
