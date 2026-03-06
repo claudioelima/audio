@@ -3,444 +3,984 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Playlist de Áudios - Hamilton Moreira</title>
-
+  <title>Ultra Premium Audiobook Platform</title>
   <style>
-    * {
-      box-sizing: border-box;
+    :root {
+      --bg: #0b1220;
+      --bg-soft: #121b2f;
+      --card: #16213a;
+      --card-2: #1c2946;
+      --text: #eef4ff;
+      --muted: #9fb0d1;
+      --line: rgba(255,255,255,0.08);
+      --primary: #47c2ff;
+      --primary-2: #7f7cff;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --shadow: 0 18px 40px rgba(0,0,0,0.28);
+      --radius: 22px;
     }
 
-    body {
+    body.light {
+      --bg: #eef4fb;
+      --bg-soft: #f6f9ff;
+      --card: #ffffff;
+      --card-2: #f8fbff;
+      --text: #172033;
+      --muted: #5d6c87;
+      --line: rgba(23,32,51,0.08);
+      --primary: #0ea5e9;
+      --primary-2: #6366f1;
+      --shadow: 0 16px 35px rgba(20,30,60,0.10);
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
       margin: 0;
+      padding: 0;
       font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
-      color: #1f2937;
-      padding: 24px;
+      background: linear-gradient(135deg, var(--bg), var(--bg-soft));
+      color: var(--text);
+      min-height: 100%;
     }
 
-    .container {
-      max-width: 760px;
-      margin: 0 auto;
-      background: #ffffff;
-      border-radius: 22px;
-      padding: 32px;
-      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.10);
-      border: 1px solid #e5e7eb;
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 300px 1fr;
     }
 
-    .topo {
+    .sidebar {
+      background: rgba(255,255,255,0.03);
+      border-right: 1px solid var(--line);
+      padding: 22px;
       display: flex;
-      align-items: center;
+      flex-direction: column;
       gap: 18px;
-      margin-bottom: 28px;
-      flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow: auto;
+      backdrop-filter: blur(10px);
     }
 
-    .logo {
-      width: 90px;
-      height: 90px;
-      object-fit: contain;
+    .brand {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .brand img {
+      width: 58px;
+      height: 58px;
       border-radius: 16px;
-      background: #f9fafb;
-      padding: 10px;
-      border: 1px solid #e5e7eb;
+      object-fit: cover;
+      border: 1px solid var(--line);
+      background: var(--card);
+      padding: 6px;
     }
 
-    .titulo-area {
-      flex: 1;
-      min-width: 240px;
+    .brand h1 {
+      font-size: 1rem;
+      margin: 0 0 4px 0;
     }
 
-    .titulo-area h1 {
-      margin: 0 0 8px;
-      font-size: 1.8rem;
-      color: #0f172a;
-    }
-
-    .titulo-area p {
+    .brand p {
       margin: 0;
-      color: #6b7280;
-      font-size: 0.98rem;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .sidebar button,
+    .sidebar input,
+    .sidebar select,
+    .main input,
+    .main textarea,
+    .main select,
+    .main button {
+      font: inherit;
+    }
+
+    .nav-btn, .btn {
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .nav-btn:hover, .btn:hover { transform: translateY(-1px); }
+    .nav-btn.active { outline: 2px solid var(--primary); }
+
+    .nav-stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .sidebar .helper {
+      color: var(--muted);
+      font-size: 0.9rem;
       line-height: 1.5;
     }
 
-    .card {
-      background: #f8fafc;
-      border: 1px solid #e5e7eb;
-      border-radius: 18px;
+    .main {
       padding: 22px;
-      margin-bottom: 20px;
+      display: grid;
+      gap: 18px;
     }
 
-    .label {
-      display: block;
-      font-weight: 700;
-      margin-bottom: 10px;
-      color: #111827;
-      font-size: 0.95rem;
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
-    .search-box {
+    .topbar h2 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+
+    .muted { color: var(--muted); }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .grid.cols-2 { grid-template-columns: 1.2fr .8fr; }
+    .grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .cover {
       width: 100%;
-      padding: 14px 16px;
-      border-radius: 12px;
-      border: 1px solid #d1d5db;
-      font-size: 1rem;
-      outline: none;
-      transition: 0.2s ease;
-      margin-bottom: 16px;
-      background: #fff;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 20px;
+      background: var(--card-2);
+      border: 1px solid var(--line);
     }
 
-    .search-box:focus,
-    .combo:focus {
-      border-color: #0ea5e9;
-      box-shadow: 0 0 0 4px rgba(14, 165, 233, 0.12);
+    .searchbar {
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 12px;
     }
 
-    .combo {
+    input[type="text"], input[type="password"], textarea, select {
       width: 100%;
-      padding: 14px 16px;
-      border-radius: 12px;
-      border: 1px solid #d1d5db;
-      font-size: 1rem;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: var(--card-2);
+      color: var(--text);
+      padding: 13px 14px;
       outline: none;
-      transition: 0.2s ease;
-      background: #fff;
+    }
+
+    textarea { min-height: 100px; resize: vertical; }
+
+    .player-box {
+      display: grid;
+      gap: 14px;
+    }
+
+    .progress {
+      width: 100%;
+      height: 10px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      overflow: hidden;
       cursor: pointer;
     }
 
-    .player-card {
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      color: #fff;
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.22);
+    .progress > div {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary), var(--primary-2));
     }
 
-    .badge {
-      display: inline-block;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: #e2e8f0;
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 0.84rem;
-      margin-bottom: 14px;
-    }
-
-    .audio-title {
-      font-size: 1.25rem;
-      margin: 0 0 10px;
-      line-height: 1.4;
-      color: #ffffff;
-    }
-
-    .audio-subtitle {
-      margin: 0 0 20px;
-      color: #cbd5e1;
-      font-size: 0.96rem;
-    }
-
-    audio {
-      width: 100%;
-      margin-bottom: 18px;
-      border-radius: 12px;
-    }
-
-    .controls {
+    .row {
       display: flex;
+      align-items: center;
+      justify-content: space-between;
       gap: 12px;
       flex-wrap: wrap;
     }
 
-    .btn {
-      border: none;
-      border-radius: 12px;
-      padding: 12px 18px;
-      font-size: 0.96rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: 0.2s ease;
+    .controls { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn.primary { background: linear-gradient(90deg, var(--primary), var(--primary-2)); color: white; border: none; }
+    .btn.success { background: var(--success); color: white; border: none; }
+    .btn.danger { background: var(--danger); color: white; border: none; }
+    .btn.warning { background: var(--warning); color: white; border: none; }
+
+    .track-list {
+      display: grid;
+      gap: 12px;
+      max-height: 60vh;
+      overflow: auto;
+      padding-right: 4px;
     }
 
-    .btn-primary {
-      background: #0ea5e9;
-      color: #fff;
+    .track {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--card-2);
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 72px 1fr auto;
+      gap: 12px;
+      align-items: center;
     }
 
-    .btn-primary:hover {
-      background: #0284c7;
+    .track.active { outline: 2px solid var(--primary); }
+    .track.locked { opacity: .72; }
+
+    .thumb {
+      width: 72px;
+      height: 72px;
+      border-radius: 14px;
+      object-fit: cover;
+      background: var(--card);
+      border: 1px solid var(--line);
     }
 
-    .btn-secondary {
-      background: #e2e8f0;
-      color: #0f172a;
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      color: var(--muted);
+      font-size: 0.82rem;
+      border: 1px solid var(--line);
     }
 
-    .btn-secondary:hover {
-      background: #cbd5e1;
+    .mini-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
-    .footer-note {
-      margin-top: 20px;
-      text-align: center;
-      color: #6b7280;
-      font-size: 0.9rem;
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
     }
 
-    .empty-message {
-      margin-top: 12px;
-      color: #b91c1c;
-      font-weight: 600;
+    .stat {
+      background: var(--card-2);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 14px;
+    }
+
+    .stat .value {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-top: 6px;
+    }
+
+    .hidden { display: none !important; }
+
+    .badge-lock { color: #fca5a5; }
+    .badge-open { color: #86efac; }
+    .fav { color: #fbbf24; font-size: 1.15rem; }
+
+    .mobile-nav {
       display: none;
+      position: sticky;
+      bottom: 0;
+      background: rgba(10, 16, 32, 0.9);
+      border-top: 1px solid var(--line);
+      padding: 10px;
+      gap: 8px;
+      grid-template-columns: repeat(4, 1fr);
+      backdrop-filter: blur(10px);
     }
 
-    @media (max-width: 600px) {
-      body {
-        padding: 14px;
-      }
+    .mobile-nav button {
+      border-radius: 12px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      background: var(--card);
+      color: var(--text);
+    }
 
-      .container {
-        padding: 20px;
-      }
-
-      .titulo-area h1 {
-        font-size: 1.45rem;
-      }
-
-      .audio-title {
-        font-size: 1.1rem;
-      }
-
-      .controls {
-        flex-direction: column;
-      }
-
-      .btn {
-        width: 100%;
-      }
+    @media (max-width: 980px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .mobile-nav { display: grid; }
+      .grid.cols-2, .hero, .searchbar, .stats, .grid.cols-3 { grid-template-columns: 1fr; }
+      .track { grid-template-columns: 62px 1fr; }
+      .mini-actions { grid-column: 1 / -1; justify-content: flex-start; }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="topo">
-      <img src="Logo.png" alt="Logo Hamilton Moreira" class="logo" />
-
-      <div class="titulo-area">
-        <h1>🎧 Playlist de Áudios - Hamilton Moreira</h1>
-        <p>
-          Escolha um capítulo no ComboBox, filtre por nome e ouça os áudios
-          em uma interface mais limpa, moderna e profissional.
-        </p>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <img id="brandLogo" src="Logo.png" alt="Logo">
+        <div>
+          <h1>Ultra Premium Audio</h1>
+          <p>Plataforma estilo app</p>
+        </div>
       </div>
-    </div>
 
-    <div class="card">
-      <label for="search" class="label">Buscar capítulo</label>
-      <input
-        type="text"
-        id="search"
-        class="search-box"
-        placeholder="Digite parte do título do áudio..."
-      />
-
-      <label for="audioSelect" class="label">Selecionar áudio</label>
-      <select id="audioSelect" class="combo"></select>
-
-      <div id="emptyMessage" class="empty-message">
-        Nenhum áudio encontrado para essa busca.
+      <div class="nav-stack">
+        <button class="nav-btn active" data-view="library">🎧 Biblioteca</button>
+        <button class="nav-btn" data-view="favorites">⭐ Favoritos</button>
+        <button class="nav-btn" data-view="admin">🛠 Área Admin</button>
+        <button class="nav-btn" data-view="account">👤 Conta</button>
       </div>
-    </div>
 
-    <div class="player-card">
-      <div class="badge" id="trackInfo">Faixa 0 de 0</div>
-      <h2 class="audio-title" id="currentTitle">Selecione um áudio</h2>
-      <p class="audio-subtitle" id="currentSubtitle">
-        O player será atualizado automaticamente quando você escolher uma faixa.
-      </p>
-
-      <audio id="player" controls>
-        <source id="audioSource" src="" type="audio/mpeg" />
-        Seu navegador não suporta o elemento de áudio.
-      </audio>
-
-      <div class="controls">
-        <button class="btn btn-secondary" id="prevBtn" type="button">⏮ Anterior</button>
-        <button class="btn btn-primary" id="playBtn" type="button">▶ Reproduzir</button>
-        <button class="btn btn-secondary" id="nextBtn" type="button">⏭ Próximo</button>
+      <div class="card">
+        <div class="row">
+          <strong>Tema</strong>
+          <button id="themeBtn" class="btn">🌙 Alternar</button>
+        </div>
+        <p class="helper">Troque entre modo escuro e claro. A escolha fica salva no navegador.</p>
       </div>
-    </div>
 
-    <div class="footer-note">
-      Plataforma de áudio organizada em formato de capítulos.
-    </div>
+      <div class="card">
+        <strong>Status do usuário</strong>
+        <p class="helper" id="sessionInfo">Visitante não autenticado.</p>
+      </div>
+
+      <div class="card">
+        <strong>Integração futura</strong>
+        <p class="helper">Estrutura pronta para conectar API, autenticação real, upload em nuvem e banco de dados.</p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <section class="topbar">
+        <div>
+          <h2 id="pageTitle">Biblioteca</h2>
+          <div class="muted" id="pageSubtitle">Ouça, favorite e continue de onde parou.</div>
+        </div>
+        <div class="controls">
+          <button class="btn" id="themeBtnTop">🌓 Tema</button>
+          <button class="btn" id="logoutBtn">Sair</button>
+        </div>
+      </section>
+
+      <section id="view-library" class="view grid">
+        <div class="stats">
+          <div class="stat"><div class="muted">Capítulos</div><div class="value" id="statTotal">0</div></div>
+          <div class="stat"><div class="muted">Liberados</div><div class="value" id="statUnlocked">0</div></div>
+          <div class="stat"><div class="muted">Favoritos</div><div class="value" id="statFavorites">0</div></div>
+          <div class="stat"><div class="muted">Último ponto</div><div class="value" id="statResume">00:00</div></div>
+        </div>
+
+        <div class="card hero">
+          <img class="cover" id="currentThumb" src="Logo.png" alt="Capa">
+          <div>
+            <div class="pill" id="currentBadge">Nenhum capítulo selecionado</div>
+            <h3 id="currentTitle">Escolha um capítulo</h3>
+            <p class="muted" id="currentDesc">Use a lista, a busca ou o combobox para iniciar.</p>
+            <div class="controls">
+              <button class="btn" id="prevBtn">⏮ Anterior</button>
+              <button class="btn primary" id="playBtn">▶ Reproduzir</button>
+              <button class="btn" id="nextBtn">⏭ Próximo</button>
+              <button class="btn" id="favoriteBtn">☆ Favoritar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid cols-2">
+          <div class="card">
+            <div class="searchbar">
+              <input type="text" id="searchInput" placeholder="Buscar capítulo por nome...">
+              <select id="audioSelect"></select>
+            </div>
+
+            <div class="player-box" style="margin-top:16px;">
+              <audio id="audioPlayer" controls preload="metadata" style="width:100%"></audio>
+              <div class="progress" id="progressBar"><div id="progressFill"></div></div>
+              <div class="row muted">
+                <span id="timeNow">00:00</span>
+                <span id="timeDuration">00:00</span>
+              </div>
+              <div class="row">
+                <span class="pill">Continua de onde parou: <strong id="resumeText">00:00</strong></span>
+                <button class="btn" id="resumeBtn">Retomar</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <strong>Informações</strong>
+            <p class="muted">Capítulos podem estar bloqueados ou liberados por perfil. Nesta versão, tudo funciona no navegador com dados simulados.</p>
+            <div class="grid" style="margin-top:14px; gap:10px;">
+              <div class="pill">Login demo: <strong style="margin-left:6px;">admin / 1234</strong></div>
+              <div class="pill">Login demo: <strong style="margin-left:6px;">user / 1234</strong></div>
+              <div class="pill">Banco futuro: users, tracks, favorites, progress, permissions</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="row" style="margin-bottom:12px;">
+            <strong>Capítulos</strong>
+            <span class="muted" id="trackCounter">0 itens</span>
+          </div>
+          <div id="trackList" class="track-list"></div>
+        </div>
+      </section>
+
+      <section id="view-favorites" class="view hidden grid">
+        <div class="card">
+          <strong>Seus favoritos</strong>
+          <p class="muted">Os capítulos marcados ficam salvos no navegador.</p>
+          <div id="favoritesList" class="track-list" style="margin-top:14px;"></div>
+        </div>
+      </section>
+
+      <section id="view-admin" class="view hidden grid">
+        <div class="grid cols-2">
+          <div class="card">
+            <strong>Novo áudio</strong>
+            <p class="muted">Cadastre capítulos manualmente ou use upload de miniatura local para pré-visualização.</p>
+            <div class="grid" style="margin-top:12px;">
+              <input type="text" id="adminTitle" placeholder="Título do capítulo">
+              <textarea id="adminDesc" placeholder="Descrição do capítulo"></textarea>
+              <input type="text" id="adminAudioUrl" placeholder="URL do áudio MP3">
+              <input type="text" id="adminThumbUrl" placeholder="URL da miniatura (opcional)">
+              <input type="file" id="adminThumbFile" accept="image/*">
+              <label class="pill"><input type="checkbox" id="adminLocked" style="margin-right:8px;">Iniciar bloqueado</label>
+              <button class="btn success" id="addAudioBtn">+ Adicionar áudio</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <strong>Gestão rápida</strong>
+            <p class="muted">Nesta área você visualiza todos os registros locais e pode limpar dados de teste.</p>
+            <div class="controls" style="margin-top:12px;">
+              <button class="btn warning" id="seedBtn">Restaurar base demo</button>
+              <button class="btn danger" id="clearStorageBtn">Limpar localStorage</button>
+            </div>
+            <p class="muted" style="margin-top:12px;">No backend real, esta seção enviaria dados para uma API com autenticação de administrador.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <strong>Gerenciar capítulos</strong>
+          <div id="adminTrackList" class="track-list" style="margin-top:14px;"></div>
+        </div>
+      </section>
+
+      <section id="view-account" class="view hidden grid">
+        <div class="grid cols-2">
+          <div class="card">
+            <strong>Login de usuário</strong>
+            <p class="muted">Simulação local. Troque de perfil para testar permissões.</p>
+            <div class="grid" style="margin-top:12px;">
+              <input type="text" id="loginUser" placeholder="Usuário">
+              <input type="password" id="loginPass" placeholder="Senha">
+              <button class="btn primary" id="loginBtn">Entrar</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <strong>Conta atual</strong>
+            <p class="muted" id="accountInfo">Nenhum usuário logado.</p>
+            <div class="controls">
+              <button class="btn" id="loadUserBtn">Carregar sessão</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   </div>
 
+  <nav class="mobile-nav">
+    <button data-view="library">🎧</button>
+    <button data-view="favorites">⭐</button>
+    <button data-view="admin">🛠</button>
+    <button data-view="account">👤</button>
+  </nav>
+
   <script>
-    const audios = [
+    const DEMO_TRACKS = [
       {
-        titulo: "Seja muito bem-vindo ao Manual do Pai do Atleta de Futebol",
-        url: "https://media.vocaroo.com/mp3/1ob5m8j4WVt7"
+        id: crypto.randomUUID(),
+        title: 'Seja muito bem-vindo ao Manual do Pai do Atleta',
+        description: 'Capítulo de abertura do audiobook.',
+        audioUrl: 'https://media.vocaroo.com/mp3/1ob5m8j4WVt7',
+        thumbUrl: 'Logo.png',
+        locked: false
       },
       {
-        titulo: "A Importância da Alimentação e Hidratação no Futebol",
-        url: "https://media.vocaroo.com/mp3/12PBWfvWgdji"
+        id: crypto.randomUUID(),
+        title: 'A Importância da Alimentação e Hidratação no Futebol',
+        description: 'Orientações sobre hábitos saudáveis no esporte.',
+        audioUrl: 'https://media.vocaroo.com/mp3/12PBWfvWgdji',
+        thumbUrl: 'Logo.png',
+        locked: false
       },
       {
-        titulo: "O álcool, em especial, é extremamente prejudicial",
-        url: "https://media.vocaroo.com/mp3/1oCZ5i6Mfu3l"
+        id: crypto.randomUUID(),
+        title: 'O álcool é extremamente prejudicial',
+        description: 'Reflexões sobre escolhas que impactam a performance.',
+        audioUrl: 'https://media.vocaroo.com/mp3/1oCZ5i6Mfu3l',
+        thumbUrl: 'Logo.png',
+        locked: true
       },
       {
-        titulo: "Como considerações finais, é preciso compreender que",
-        url: "https://media.vocaroo.com/mp3/1hWYO1oQXLzj"
-      },
-      {
-        titulo: "Áudio Dicas Técnicas 01",
-        url: "https://media.vocaroo.com/mp3/1hWYO1oQXLzj"
-      },
-      {
-        titulo: "Áudio Dicas Técnicas 02",
-        url: "https://media.vocaroo.com/mp3/1hWYO1oQXLzj"
-      },
-      {
-        titulo: "Áudio Dicas Técnicas 03",
-        url: "https://media.vocaroo.com/mp3/1hWYO1oQXLzj"
-      },
-      {
-        titulo: "Áudio Dicas Técnicas 04",
-        url: "https://media.vocaroo.com/mp3/1hWYO1oQXLzj"
+        id: crypto.randomUUID(),
+        title: 'Considerações finais',
+        description: 'Encerramento do conteúdo com mensagem final.',
+        audioUrl: 'https://media.vocaroo.com/mp3/1hWYO1oQXLzj',
+        thumbUrl: 'Logo.png',
+        locked: true
       }
     ];
 
-    const audioSelect = document.getElementById("audioSelect");
-    const searchInput = document.getElementById("search");
-    const player = document.getElementById("player");
-    const audioSource = document.getElementById("audioSource");
-    const currentTitle = document.getElementById("currentTitle");
-    const currentSubtitle = document.getElementById("currentSubtitle");
-    const trackInfo = document.getElementById("trackInfo");
-    const emptyMessage = document.getElementById("emptyMessage");
+    const STORAGE_KEYS = {
+      tracks: 'ultra_audio_tracks',
+      favorites: 'ultra_audio_favorites',
+      progress: 'ultra_audio_progress',
+      session: 'ultra_audio_session',
+      theme: 'ultra_audio_theme'
+    };
 
-    const prevBtn = document.getElementById("prevBtn");
-    const playBtn = document.getElementById("playBtn");
-    const nextBtn = document.getElementById("nextBtn");
+    const users = {
+      admin: { username: 'admin', password: '1234', role: 'admin', unlockedAll: true },
+      user: { username: 'user', password: '1234', role: 'user', unlockedAll: false }
+    };
 
-    let listaFiltrada = [...audios];
-    let indiceAtual = -1;
+    let tracks = [];
+    let favorites = [];
+    let progress = {};
+    let session = null;
+    let filteredTracks = [];
+    let currentIndex = -1;
 
-    function popularCombo(lista) {
-      audioSelect.innerHTML = "";
+    const qs = (s) => document.querySelector(s);
+    const qsa = (s) => [...document.querySelectorAll(s)];
 
-      if (lista.length === 0) {
-        const option = document.createElement("option");
-        option.value = "";
-        option.textContent = "Nenhum áudio encontrado";
-        audioSelect.appendChild(option);
-        emptyMessage.style.display = "block";
-        return;
-      }
+    const audioPlayer = qs('#audioPlayer');
+    const progressFill = qs('#progressFill');
+    const progressBar = qs('#progressBar');
 
-      emptyMessage.style.display = "none";
+    function save(key, value) { localStorage.setItem(key, JSON.stringify(value)); }
+    function load(key, fallback) {
+      try {
+        const v = localStorage.getItem(key);
+        return v ? JSON.parse(v) : fallback;
+      } catch { return fallback; }
+    }
 
-      const defaultOption = document.createElement("option");
-      defaultOption.value = "";
-      defaultOption.textContent = "Selecione um áudio...";
-      audioSelect.appendChild(defaultOption);
+    function bootstrap() {
+      tracks = load(STORAGE_KEYS.tracks, null) || structuredClone(DEMO_TRACKS);
+      favorites = load(STORAGE_KEYS.favorites, []);
+      progress = load(STORAGE_KEYS.progress, {});
+      session = load(STORAGE_KEYS.session, null);
+      filteredTracks = [...tracks];
+      const theme = load(STORAGE_KEYS.theme, 'dark');
+      document.body.classList.toggle('light', theme === 'light');
+      refreshAll();
+      updateSessionUI();
+    }
 
-      lista.forEach((audio, index) => {
-        const option = document.createElement("option");
-        option.value = index;
-        option.textContent = audio.titulo;
-        audioSelect.appendChild(option);
+    function refreshAll() {
+      renderSelect();
+      renderTrackList();
+      renderFavorites();
+      renderAdminList();
+      updateStats();
+      updateResumeLabel();
+    }
+
+    function allowedTrack(track) {
+      if (!track.locked) return true;
+      if (session?.role === 'admin') return true;
+      return false;
+    }
+
+    function formatTime(sec) {
+      if (!isFinite(sec)) return '00:00';
+      const m = Math.floor(sec / 60);
+      const s = Math.floor(sec % 60);
+      return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+    }
+
+    function updateStats() {
+      qs('#statTotal').textContent = tracks.length;
+      qs('#statUnlocked').textContent = tracks.filter(t => allowedTrack(t)).length;
+      qs('#statFavorites').textContent = favorites.length;
+      const track = filteredTracks[currentIndex];
+      const resume = track ? (progress[track.id]?.time || 0) : 0;
+      qs('#statResume').textContent = formatTime(resume);
+      qs('#trackCounter').textContent = filteredTracks.length + ' itens';
+    }
+
+    function renderSelect() {
+      const select = qs('#audioSelect');
+      select.innerHTML = '<option value="">Selecionar capítulo...</option>';
+      filteredTracks.forEach((track, idx) => {
+        const opt = document.createElement('option');
+        opt.value = idx;
+        opt.textContent = `${track.locked ? '🔒' : '🔓'} ${track.title}`;
+        select.appendChild(opt);
       });
     }
 
-    function atualizarPlayer(index, autoPlay = false) {
-      if (index < 0 || index >= listaFiltrada.length) return;
+    function renderTrackList() {
+      const list = qs('#trackList');
+      list.innerHTML = '';
+      filteredTracks.forEach((track, idx) => {
+        const div = document.createElement('div');
+        div.className = 'track' + (idx === currentIndex ? ' active' : '') + (track.locked ? ' locked' : '');
+        const isFav = favorites.includes(track.id);
+        div.innerHTML = `
+          <img class="thumb" src="${track.thumbUrl || 'Logo.png'}" alt="thumb">
+          <div>
+            <div class="row">
+              <strong>${track.title}</strong>
+              <span class="pill ${track.locked ? 'badge-lock' : 'badge-open'}">${track.locked ? '🔒 Bloqueado' : '🔓 Liberado'}</span>
+            </div>
+            <div class="muted" style="margin-top:6px;">${track.description || 'Sem descrição'}</div>
+            <div class="row" style="margin-top:10px;">
+              <span class="pill">Retomar: ${formatTime(progress[track.id]?.time || 0)}</span>
+              ${isFav ? '<span class="fav">★ Favorito</span>' : ''}
+            </div>
+          </div>
+          <div class="mini-actions">
+            <button class="btn" onclick="playTrack(${idx})">▶</button>
+            <button class="btn" onclick="toggleFavorite('${track.id}')">${isFav ? '★' : '☆'}</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
 
-      indiceAtual = index;
-      const audioAtual = listaFiltrada[index];
+    function renderFavorites() {
+      const list = qs('#favoritesList');
+      list.innerHTML = '';
+      const favTracks = tracks.filter(t => favorites.includes(t.id));
+      if (!favTracks.length) {
+        list.innerHTML = '<div class="muted">Nenhum favorito salvo.</div>';
+        return;
+      }
+      favTracks.forEach(track => {
+        const idx = tracks.findIndex(t => t.id === track.id);
+        const div = document.createElement('div');
+        div.className = 'track';
+        div.innerHTML = `
+          <img class="thumb" src="${track.thumbUrl || 'Logo.png'}" alt="thumb">
+          <div>
+            <strong>${track.title}</strong>
+            <div class="muted" style="margin-top:6px;">${track.description || 'Sem descrição'}</div>
+          </div>
+          <div class="mini-actions">
+            <button class="btn" onclick="playTrackById('${track.id}')">▶</button>
+            <button class="btn" onclick="toggleFavorite('${track.id}')">Remover</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
 
-      audioSource.src = audioAtual.url;
-      player.load();
+    function renderAdminList() {
+      const list = qs('#adminTrackList');
+      list.innerHTML = '';
+      tracks.forEach(track => {
+        const div = document.createElement('div');
+        div.className = 'track';
+        div.innerHTML = `
+          <img class="thumb" src="${track.thumbUrl || 'Logo.png'}" alt="thumb">
+          <div>
+            <strong>${track.title}</strong>
+            <div class="muted" style="margin-top:6px;">${track.description || 'Sem descrição'}</div>
+            <div class="row" style="margin-top:10px;">
+              <span class="pill">${track.locked ? '🔒 Bloqueado' : '🔓 Liberado'}</span>
+              <span class="pill">ID: ${track.id.slice(0,8)}</span>
+            </div>
+          </div>
+          <div class="mini-actions">
+            <button class="btn" onclick="toggleLock('${track.id}')">${track.locked ? 'Liberar' : 'Bloquear'}</button>
+            <button class="btn danger" onclick="deleteTrack('${track.id}')">Excluir</button>
+          </div>
+        `;
+        list.appendChild(div);
+      });
+    }
 
-      currentTitle.textContent = audioAtual.titulo;
-      currentSubtitle.textContent = "Capítulo selecionado na playlist.";
-      trackInfo.textContent = `Faixa ${index + 1} de ${listaFiltrada.length}`;
+    function setCurrent(track) {
+      qs('#currentTitle').textContent = track.title;
+      qs('#currentDesc').textContent = track.description || 'Sem descrição.';
+      qs('#currentThumb').src = track.thumbUrl || 'Logo.png';
+      qs('#currentBadge').textContent = track.locked ? 'Capítulo bloqueado' : 'Capítulo liberado';
+      qs('#favoriteBtn').textContent = favorites.includes(track.id) ? '★ Favorito' : '☆ Favoritar';
+      updateResumeLabel();
+      updateStats();
+    }
 
-      audioSelect.value = index;
+    function playTrack(index) {
+      const track = filteredTracks[index];
+      if (!track) return;
+      if (!allowedTrack(track)) {
+        alert('Este capítulo está bloqueado para o perfil atual.');
+        return;
+      }
+      currentIndex = index;
+      audioPlayer.src = track.audioUrl;
+      const lastTime = progress[track.id]?.time || 0;
+      audioPlayer.load();
+      audioPlayer.addEventListener('loadedmetadata', function onMeta() {
+        if (lastTime > 0 && lastTime < audioPlayer.duration) audioPlayer.currentTime = lastTime;
+        audioPlayer.removeEventListener('loadedmetadata', onMeta);
+      });
+      audioPlayer.play();
+      setCurrent(track);
+      renderTrackList();
+      qs('#audioSelect').value = String(index);
+    }
 
-      if (autoPlay) {
-        player.play();
+    function playTrackById(id) {
+      filteredTracks = [...tracks];
+      const idx = filteredTracks.findIndex(t => t.id === id);
+      renderSelect();
+      playTrack(idx);
+    }
+
+    function toggleFavorite(id) {
+      if (favorites.includes(id)) favorites = favorites.filter(x => x !== id);
+      else favorites.push(id);
+      save(STORAGE_KEYS.favorites, favorites);
+      refreshAll();
+      const current = filteredTracks[currentIndex];
+      if (current) qs('#favoriteBtn').textContent = favorites.includes(current.id) ? '★ Favorito' : '☆ Favoritar';
+    }
+
+    function toggleLock(id) {
+      if (session?.role !== 'admin') return alert('Somente admin pode alterar bloqueio.');
+      tracks = tracks.map(t => t.id === id ? { ...t, locked: !t.locked } : t);
+      save(STORAGE_KEYS.tracks, tracks);
+      filterTracks();
+      refreshAll();
+    }
+
+    function deleteTrack(id) {
+      if (session?.role !== 'admin') return alert('Somente admin pode excluir.');
+      tracks = tracks.filter(t => t.id !== id);
+      favorites = favorites.filter(f => f !== id);
+      delete progress[id];
+      save(STORAGE_KEYS.tracks, tracks);
+      save(STORAGE_KEYS.favorites, favorites);
+      save(STORAGE_KEYS.progress, progress);
+      currentIndex = -1;
+      audioPlayer.pause();
+      audioPlayer.removeAttribute('src');
+      filterTracks();
+      refreshAll();
+    }
+
+    function filterTracks() {
+      const term = qs('#searchInput').value.trim().toLowerCase();
+      filteredTracks = tracks.filter(t => t.title.toLowerCase().includes(term));
+      renderSelect();
+      renderTrackList();
+      updateStats();
+    }
+
+    function updateResumeLabel() {
+      const track = filteredTracks[currentIndex];
+      const time = track ? (progress[track.id]?.time || 0) : 0;
+      qs('#resumeText').textContent = formatTime(time);
+      qs('#timeNow').textContent = formatTime(audioPlayer.currentTime || 0);
+      qs('#timeDuration').textContent = formatTime(audioPlayer.duration || 0);
+    }
+
+    function login() {
+      const u = qs('#loginUser').value.trim();
+      const p = qs('#loginPass').value.trim();
+      const found = users[u];
+      if (!found || found.password !== p) {
+        alert('Usuário ou senha inválidos.');
+        return;
+      }
+      session = { username: found.username, role: found.role };
+      save(STORAGE_KEYS.session, session);
+      updateSessionUI();
+      alert('Login realizado com sucesso.');
+    }
+
+    function logout() {
+      session = null;
+      save(STORAGE_KEYS.session, session);
+      updateSessionUI();
+    }
+
+    function updateSessionUI() {
+      const info = session ? `Logado como ${session.username} (${session.role}).` : 'Visitante não autenticado.';
+      qs('#sessionInfo').textContent = info;
+      qs('#accountInfo').textContent = info;
+      qs('#logoutBtn').style.visibility = session ? 'visible' : 'hidden';
+    }
+
+    function switchView(view) {
+      qsa('.view').forEach(v => v.classList.add('hidden'));
+      qs('#view-' + view).classList.remove('hidden');
+      qsa('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+      const titles = {
+        library: ['Biblioteca', 'Ouça, favorite e continue de onde parou.'],
+        favorites: ['Favoritos', 'Sua seleção especial de capítulos.'],
+        admin: ['Área Administrativa', 'Cadastro, bloqueio e gestão local dos áudios.'],
+        account: ['Conta', 'Acesso de usuário e troca de perfil.']
+      };
+      qs('#pageTitle').textContent = titles[view][0];
+      qs('#pageSubtitle').textContent = titles[view][1];
+    }
+
+    function toggleTheme() {
+      document.body.classList.toggle('light');
+      save(STORAGE_KEYS.theme, document.body.classList.contains('light') ? 'light' : 'dark');
+    }
+
+    function addAudio() {
+      if (session?.role !== 'admin') return alert('Somente admin pode adicionar áudios.');
+      const title = qs('#adminTitle').value.trim();
+      const description = qs('#adminDesc').value.trim();
+      const audioUrl = qs('#adminAudioUrl').value.trim();
+      const thumbUrlText = qs('#adminThumbUrl').value.trim();
+      const locked = qs('#adminLocked').checked;
+      const file = qs('#adminThumbFile').files[0];
+
+      if (!title || !audioUrl) {
+        alert('Preencha pelo menos título e URL do áudio.');
+        return;
+      }
+
+      function commit(finalThumb) {
+        tracks.unshift({ id: crypto.randomUUID(), title, description, audioUrl, thumbUrl: finalThumb || 'Logo.png', locked });
+        save(STORAGE_KEYS.tracks, tracks);
+        ['#adminTitle','#adminDesc','#adminAudioUrl','#adminThumbUrl'].forEach(sel => qs(sel).value = '');
+        qs('#adminThumbFile').value = '';
+        qs('#adminLocked').checked = false;
+        filterTracks();
+        refreshAll();
+        alert('Áudio adicionado com sucesso.');
+      }
+
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => commit(e.target.result);
+        reader.readAsDataURL(file);
+      } else {
+        commit(thumbUrlText);
       }
     }
 
-    function filtrarAudios() {
-      const termo = searchInput.value.trim().toLowerCase();
-
-      listaFiltrada = audios.filter(audio =>
-        audio.titulo.toLowerCase().includes(termo)
-      );
-
-      popularCombo(listaFiltrada);
-
-      indiceAtual = -1;
-      currentTitle.textContent = "Selecione um áudio";
-      currentSubtitle.textContent = "O player será atualizado automaticamente quando você escolher uma faixa.";
-      trackInfo.textContent = `Faixa 0 de ${listaFiltrada.length}`;
-      audioSource.src = "";
-      player.load();
+    function restoreDemo() {
+      if (session?.role !== 'admin') return alert('Somente admin pode restaurar a base demo.');
+      tracks = structuredClone(DEMO_TRACKS);
+      save(STORAGE_KEYS.tracks, tracks);
+      filteredTracks = [...tracks];
+      refreshAll();
     }
 
-    audioSelect.addEventListener("change", function () {
-      const index = Number(this.value);
-      if (!isNaN(index)) {
-        atualizarPlayer(index, false);
-      }
+    function clearStorage() {
+      if (session?.role !== 'admin') return alert('Somente admin pode limpar dados.');
+      Object.values(STORAGE_KEYS).forEach(k => localStorage.removeItem(k));
+      location.reload();
+    }
+
+    qs('#searchInput').addEventListener('input', filterTracks);
+    qs('#audioSelect').addEventListener('change', e => {
+      if (e.target.value === '') return;
+      playTrack(Number(e.target.value));
+    });
+    qs('#playBtn').addEventListener('click', () => {
+      if (currentIndex === -1 && filteredTracks.length) playTrack(0);
+      else if (audioPlayer.paused) audioPlayer.play();
+      else audioPlayer.pause();
+    });
+    qs('#prevBtn').addEventListener('click', () => {
+      if (!filteredTracks.length) return;
+      const next = currentIndex <= 0 ? filteredTracks.length - 1 : currentIndex - 1;
+      playTrack(next);
+    });
+    qs('#nextBtn').addEventListener('click', () => {
+      if (!filteredTracks.length) return;
+      const next = currentIndex >= filteredTracks.length - 1 ? 0 : currentIndex + 1;
+      playTrack(next);
+    });
+    qs('#favoriteBtn').addEventListener('click', () => {
+      const track = filteredTracks[currentIndex];
+      if (track) toggleFavorite(track.id);
+    });
+    qs('#resumeBtn').addEventListener('click', () => {
+      const track = filteredTracks[currentIndex];
+      if (!track) return;
+      audioPlayer.currentTime = progress[track.id]?.time || 0;
+      audioPlayer.play();
     });
 
-    searchInput.addEventListener("input", filtrarAudios);
-
-    prevBtn.addEventListener("click", function () {
-      if (listaFiltrada.length === 0) return;
-
-      if (indiceAtual <= 0) {
-        atualizarPlayer(listaFiltrada.length - 1, true);
-      } else {
-        atualizarPlayer(indiceAtual - 1, true);
+    audioPlayer.addEventListener('timeupdate', () => {
+      const track = filteredTracks[currentIndex];
+      if (track) {
+        progress[track.id] = { time: audioPlayer.currentTime };
+        save(STORAGE_KEYS.progress, progress);
       }
+      const pct = audioPlayer.duration ? (audioPlayer.currentTime / audioPlayer.duration) * 100 : 0;
+      progressFill.style.width = pct + '%';
+      updateResumeLabel();
+    });
+    audioPlayer.addEventListener('loadedmetadata', updateResumeLabel);
+    audioPlayer.addEventListener('ended', () => {
+      if (!filteredTracks.length) return;
+      const next = currentIndex >= filteredTracks.length - 1 ? 0 : currentIndex + 1;
+      playTrack(next);
+    });
+    progressBar.addEventListener('click', e => {
+      const rect = progressBar.getBoundingClientRect();
+      const pct = (e.clientX - rect.left) / rect.width;
+      if (audioPlayer.duration) audioPlayer.currentTime = pct * audioPlayer.duration;
     });
 
-    nextBtn.addEventListener("click", function () {
-      if (listaFiltrada.length === 0) return;
+    qsa('.nav-btn').forEach(b => b.addEventListener('click', () => switchView(b.dataset.view)));
+    qsa('.mobile-nav button').forEach(b => b.addEventListener('click', () => switchView(b.dataset.view)));
 
-      if (indiceAtual >= listaFiltrada.length - 1 || indiceAtual === -1) {
-        atualizarPlayer(0, true);
-      } else {
-        atualizarPlayer(indiceAtual + 1, true);
-      }
-    });
+    qs('#themeBtn').addEventListener('click', toggleTheme);
+    qs('#themeBtnTop').addEventListener('click', toggleTheme);
+    qs('#loginBtn').addEventListener('click', login);
+    qs('#logoutBtn').addEventListener('click', logout);
+    qs('#loadUserBtn').addEventListener('click', updateSessionUI);
+    qs('#addAudioBtn').addEventListener('click', addAudio);
+    qs('#seedBtn').addEventListener('click', restoreDemo);
+    qs('#clearStorageBtn').addEventListener('click', clearStorage);
 
-    playBtn.addEventListener("click", function () {
-      if (!audioSource.src && listaFiltrada.length > 0) {
-        atualizarPlayer(0, true);
-      } else {
-        player.play();
-      }
-    });
+    window.toggleFavorite = toggleFavorite;
+    window.playTrack = playTrack;
+    window.playTrackById = playTrackById;
+    window.toggleLock = toggleLock;
+    window.deleteTrack = deleteTrack;
 
-    player.addEventListener("ended", function () {
-      if (listaFiltrada.length === 0) return;
-
-      if (indiceAtual < listaFiltrada.length - 1) {
-        atualizarPlayer(indiceAtual + 1, true);
-      }
-    });
-
-    popularCombo(listaFiltrada);
-    trackInfo.textContent = `Faixa 0 de ${listaFiltrada.length}`;
+    bootstrap();
   </script>
 </body>
 </html>
